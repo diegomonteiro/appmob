@@ -1,5 +1,7 @@
 {
   "name": "appmob",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "adminbsb-materialdesign": "^1.0.7"
+  }
 }
