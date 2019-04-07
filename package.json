@@ -2,6 +2,7 @@
   "name": "appmob",
   "private": true,
   "dependencies": {
-    "adminbsb-materialdesign": "^1.0.7"
+    "adminbsb-materialdesign": "^1.0.7",
+    "sweetalert": "^2.1.2"
   }
 }

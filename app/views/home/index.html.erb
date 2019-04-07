@@ -1,19 +1,133 @@
+ 
  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
    crossorigin=""/>
-   <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <!-- Make sure you put this AFTER Leaflet's CSS -->
  <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
    integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
    crossorigin=""></script>
 
+
+
 <style>
-	#mapid { height: 800px }
+	#mapid { height: 680px }
 </style>
 
- <div id="mapid"></div>
+
+<div class="row clearfix">
+                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                    <div class="info-box bg-red hover-expand-effect">
+                        <div class="icon">
+                            <!--<i class="material-icons">playlist_add_check</i>-->
+                            <i class="fas fa-times"></i>
+                        </div>
+                        <div class="content">
+                            <div class="text">BURACOS/FISSURAS</div>
+                            <div class="number count-to" data-from="0" data-to="125" data-speed="15" data-fresh-interval="20">125</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                    <div class="info-box bg-orange hover-expand-effect">
+                        <div class="icon">
+                            <!--<i class="material-icons">help</i>-->
+                            <i class="fas fa-exclamation"></i>
+                        </div>
+                        <div class="content">
+                            <div class="text">RECLAMAÇÕES</div>
+                            <div class="number count-to" data-from="0" data-to="257" data-speed="1000" data-fresh-interval="20">257</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                    <div class="info-box bg-light-green hover-expand-effect">
+                        <div class="icon">
+                            <!--<i class="material-icons">forum</i>-->
+                            <i class="fas fa-trash"></i>
+                        </div>
+                        <div class="content">
+                            <div class="text">LIXO IRREGULAR</div>
+                            <div class="number count-to" data-from="0" data-to="243" data-speed="1000" data-fresh-interval="20">243</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                    <div class="info-box bg-cyan hover-expand-effect">
+                        <div class="icon">
+                            <!--<i class="material-icons">person_add</i>-->
+                            <i class="fas fa-water"></i>
+                        </div>
+                        <div class="content">
+                            <div class="text">INUNDAÇÕES</div>
+                            <div class="number count-to" data-from="0" data-to="1225" data-speed="1000" data-fresh-interval="20">1225</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                    <div class="info-box bg-brown hover-expand-effect">
+                        <div class="icon">
+                            <!--<i class="material-icons">person_add</i>-->
+                            <i class="fas fa-mountain"></i>
+                        </div>
+                        <div class="content">
+                            <div class="text">DESLIZAMENTOS</div>
+                            <div class="number count-to" data-from="0" data-to="1225" data-speed="1000" data-fresh-interval="20">1225</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                    <div class="info-box bg-deep-orange hover-expand-effect">
+                        <div class="icon">
+                            <!--<i class="material-icons">person_add</i>-->
+                            <i class="fas fa-skull-crossbones"></i>
+                        </div>
+                        <div class="content">
+                            <div class="text">ASSALTOS</div>
+                            <div class="number count-to" data-from="0" data-to="1225" data-speed="1000" data-fresh-interval="20">1225</div>
+                        </div>
+                    </div>
+                </div>
+</div>
+
+<div class="row clearfix">
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<div class="card">
+		
+		<!--<div class="header">
+		
+		</div>-->
+		<div class="body" id="mapid">
+			<!--<div id="mapid"></div>-->
+		</div>
+	</div>
+</div>
+</div>
+<div class="modal fade" id="modal-problema-via" tabindex="-1" role="dialog" style="display: none;">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="largeModalLabel">Indicação de Problemas na Via</h4>
+                        </div>
+                        <div class="modal-body">
+                            Olá cidadão, notou algum problema na via como buracos, valas, fissuras e defeitos
+                            em geral, informe aqui, se possível tire uma fotografia do problema para facilitar
+                            o processo de triagem...
+
+							<form>
+								
+							</form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn bg-light-green btn-link waves-effect">Confirmar</button>
+                            <button type="button" class="btn bg-gray btn-link waves-effect" data-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+</div>
 
  <script>
-	var mymap = L.map('mapid').setView([51.505, -0.09], 13);
+	var mymap = L.map('mapid').setView([-23.5252, -46.2512], 13);
 
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 	    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -24,11 +138,26 @@
 
 	var popup = L.popup();
 
+	$(window).on("resize", function () { $("#mapid").height($(window).height()-300); mymap.invalidateSize(); }).trigger("resize");
+
 	function onMapClick(e) {
-	    popup
-	        .setLatLng(e.latlng)
-	        .setContent("You clicked the map at " + e.latlng.toString())
-	        .openOn(mymap);
+	    /*var conteudo = "<button type=\"button\" class=\"btn btn-primary btn-circle-lg waves-effect waves-circle waves-float\"><i class=\"material-icons\">extension</i></button>";*/
+
+	    var conteudo = "";
+
+	    conteudo += "<button type=\"button\" data-title=\"Indicação de Problemas na Via\" data-toggle=\"modal\" data-target=\"#modal-problema-via\" class=\"btn bg-red btn-circle-lg waves-effect waves-circle waves-float\"><i class=\"fas fa-times\"></i></button>&nbsp;";
+
+	    conteudo += "<button type=\"button\" data-title=\"Indicação de Incidentes\" data-toggle=\"modal\" data-target=\"#modal-problema-geral\" class=\"btn bg-orange btn-circle-lg waves-effect waves-circle waves-float\"><i class=\"fas fa-exclamation  \"></i></button>&nbsp;";
+
+	    conteudo += "<button type=\"button\" data-toggle=\"modal\" data-title=\"Indicação de Lixo irregular\" data-target=\"#modal-problema-lixo\" class=\"btn bg-green btn-circle-lg waves-effect waves-circle waves-float\"><i class=\"fas fa-trash\"></i></button>&nbsp;";
+
+	    conteudo += "<button type=\"button\" data-title=\"Indicação de Inundações/Desmoronamentos\" data-toggle=\"modal\" data-target=\"#modal-problema-inundacao\" class=\"btn bg-cyan btn-circle-lg waves-effect waves-circle waves-float\"><i class=\"fas fa-water\"></i></button>&nbsp;";
+
+	    conteudo += "<button type=\"button\" data-title=\"Indicação de Problemas na Segurança\" data-toggle=\"modal\" data-target=\"#modal-problema-seguranca\" class=\"btn bg-black btn-circle-lg waves-effect waves-circle waves-float\"><i class=\"fas fa-skull-crossbones\"></i></button>&nbsp;";   
+
+	    popup.setLatLng(e.latlng).setContent(conteudo).openOn(mymap);
+
+	    
 	}
 
 	mymap.on('click', onMapClick);
