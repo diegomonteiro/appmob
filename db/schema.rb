@@ -10,10 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_06_050959) do
+ActiveRecord::Schema.define(version: 2019_04_08_045858) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "cities", force: :cascade do |t|
+    t.string "name"
+    t.string "cod_ibge"
+    t.string "uf"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.text "description"
+    t.float "lat"
+    t.float "lon"
+    t.bigint "city_id"
+    t.integer "event_type"
+    t.json "event_files"
+    t.bigint "user_id"
+    t.integer "event_status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "votes_up"
+    t.integer "votes_down"
+    t.index ["city_id"], name: "index_events_on_city_id"
+    t.index ["user_id"], name: "index_events_on_user_id"
+  end
 
   create_table "permissions", force: :cascade do |t|
     t.jsonb "actions", default: {}
@@ -85,4 +110,6 @@ ActiveRecord::Schema.define(version: 2019_04_06_050959) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  add_foreign_key "events", "cities"
+  add_foreign_key "events", "users"
 end
