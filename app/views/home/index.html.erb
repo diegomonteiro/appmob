@@ -1,9 +1,8 @@
- 
- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
    crossorigin=""/>
- <!-- Make sure you put this AFTER Leaflet's CSS -->
- <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+<!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
    integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
    crossorigin=""></script>
 
@@ -36,7 +35,7 @@
 		<!--<div class="header">
 		
 		</div>-->
-		<div class="body" id="mapid">
+		<div id="mapid">
 			<!--<div id="mapid"></div>-->
 		</div>
 	</div>
@@ -52,7 +51,7 @@
                         </div>
                         <div class="content">
                             <div class="text">BURACOS</div>
-                            <div class="number count-to" data-from="0" data-to="125" data-speed="15" data-fresh-interval="20">125</div>
+                            <div class="number count-to" data-from="0" data-to="<%= @count_holes %>" data-speed="1" data-fresh-interval="1"><%= @count_holes %></div>
                         </div>
                     </div>
                 </div>
@@ -64,7 +63,7 @@
                         </div>
                         <div class="content">
                             <div class="text">RECLAMAÇÕES</div>
-                            <div class="number count-to" data-from="0" data-to="257" data-speed="1000" data-fresh-interval="20">257</div>
+                            <div class="number count-to" data-from="0" data-to="<%= @count_reclamation %>" data-speed="1" data-fresh-interval="1"><%= @count_reclamation %></div>
                         </div>
                     </div>
                 </div>
@@ -76,7 +75,7 @@
                         </div>
                         <div class="content">
                             <div class="text">LIXÃO</div>
-                            <div class="number count-to" data-from="0" data-to="243" data-speed="1000" data-fresh-interval="20">243</div>
+                            <div class="number count-to" data-from="0" data-to="<%= @count_trash %>" data-speed="1" data-fresh-interval="1"><%= @count_trash %></div>
                         </div>
                     </div>
                 </div>
@@ -88,7 +87,7 @@
                         </div>
                         <div class="content">
                             <div class="text">DESASTRES</div>
-                            <div class="number count-to" data-from="0" data-to="1225" data-speed="1000" data-fresh-interval="20">1225</div>
+                            <div class="number count-to" data-from="0" data-to="<%= @count_desaster %>" data-speed="1" data-fresh-interval="1"><%= @count_desaster %></div>
                         </div>
                     </div>
                 </div>
@@ -101,7 +100,7 @@
                         </div>
                         <div class="content">
                             <div class="text">ASSALTOS</div>
-                            <div class="number count-to" data-from="0" data-to="1225" data-speed="1000" data-fresh-interval="20">1225</div>
+                            <div class="number count-to" data-from="0" data-to="<%= @count_assault %>" data-speed="1" data-fresh-interval="1"><%= @count_assault %></div>
                         </div>
                     </div>
                 </div>
@@ -114,7 +113,7 @@
                         </div>
                         <div class="content">
                             <div class="text">RESOLVIDOS</div>
-                            <div class="number count-to" data-from="0" data-to="1225" data-speed="1000" data-fresh-interval="20">1225</div>
+                            <div class="number count-to" data-from="0" data-to="<%= @count_solveds %>" data-speed="1000" data-fresh-interval="1"><%= @count_solveds %></div>
                         </div>
                     </div>
                 </div>
@@ -129,12 +128,24 @@
                         <div class="modal-body">
                             						
 							<form id="form_problema" name="form-problema" action="/create_event" method="POST">
-								<input type="hidden" id="event_type" name="event-type" value="0" />
+								<input type="hidden" id="event_type" name="event[event_type]" value="0" />
+                                <input type="hidden" id="event_lat" name="event[lat]" value="0" />
+                                <input type="hidden" id="event_lon" name="event[lon]" value="0" />
+                                <input type="hidden" id="event_user_id" name="event[user_id]" value="0" />
                                 <div class="form-group form-float">
                                     <div class="form-line">
-                                        <textarea name="description" id="description" class="form-control"></textarea> 
+                                        <textarea name="event[description]" id="event_description" class="form-control"></textarea> 
                                         <label class="form-label">Descrição do Problema</label>
                                     </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" name="event[anonymous]" id="event_anonymous" checked />
+                                    <label for="event_anonymous">Não quero me identificar</label>
                                 </div>                          
                              	
                             </form>
@@ -151,6 +162,8 @@
 
  <script>
 	var mymap = L.map('mapid').setView([-23.5252, -46.2512], 13);
+
+    var markers = [];
 
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 	    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -191,16 +204,35 @@
 	  //$('#modal-problema').title("")
 	  var modal = $(this);
 	  var button = $(e.relatedTarget);
+      var params = button.data("coords");
+      var coords = params.substring(params.indexOf("(")+1, params.indexOf(")")).split(",");
 
 	  console.log("Modal Lançado: ", e);
 
 	  modal.find('.modal-title').text(button.data("title"));
 	  modal.find("#event_type").val(button.data("event-type"));
+      modal.find("#event_lat").val(parseFloat(coords[0]));
+      modal.find("#event_lon").val(parseFloat(coords[1]));
+      modal.find("#event_user_id").val(<%= current_user.id unless current_user.nil? %>);
+      modal.find("#event_description").val("");
 	  //modal.find(".modal-content").removeClass("modal-col-*").addClass("modal-col-"+button.data("color"));
 
 	  $(document).on('click', '.btn-ok', function(eok){
 	  	var parent = $($(this).get(0).parentElement.parentElement);
 	  	console.log(parent.find("#form_problema").serialize());
+        
+        $.ajax({
+          type: "POST",
+          url: "/events.json",
+          data: parent.find("#form_problema").serialize(),
+          success: function(data){
+            console.log("Sucesso: ",data);
+          },
+          error: function(data){
+            console.log("Erro: ",data);
+          }
+        });
+
 	  });
 	})
 
