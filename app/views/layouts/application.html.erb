@@ -103,7 +103,7 @@ $.AdminBSB.options = {
     leftSideBar: {
         scrollColor: 'rgba(0,0,0,0.5)',
         scrollWidth: '4px',
-        scrollAlwaysVisible: false,
+        scrollAlwaysVisible: true,
         scrollBorderRadius: '0',
         scrollRailBorderRadius: '0',
         scrollActiveItemWhenPageLoad: true,
@@ -530,7 +530,7 @@ $.AdminBSB.browser = {
 
 $(function () {
     $.AdminBSB.browser.activate();
-    $.AdminBSB.leftSideBar.activate();
+    //$.AdminBSB.leftSideBar.activate();
     $.AdminBSB.rightSideBar.activate();
     $.AdminBSB.navbar.activate();
     $.AdminBSB.dropdownMenu.activate();
