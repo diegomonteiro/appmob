@@ -5,4 +5,6 @@ Rails.application.routes.draw do
   root to: "home#index"
 
   devise_for :users
+
+  get "cities_by_names", to: "cities#city_by_names"
 end

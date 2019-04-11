@@ -21,6 +21,18 @@ class CitiesController < ApplicationController
   def edit
   end
 
+  def city_by_names
+    @cities = City.where("name IN (?)", params[:names])
+
+    respond_to do |format|
+      unless @cities.blank?
+        format.json { render json: @cities.to_json, status: 200, location: @cities }
+      else
+        format.json { render json: @cities.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   # POST /cities
   # POST /cities.json
   def create

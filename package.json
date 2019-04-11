@@ -3,6 +3,7 @@
   "private": true,
   "dependencies": {
     "adminbsb-materialdesign": "^1.0.7",
+    "leaflet-fontawesome-markers": "0.0.5",
     "leaflet.awesome-markers": "^2.0.5",
     "sweetalert": "^2.1.2"
   }

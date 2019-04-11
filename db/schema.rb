@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_08_045858) do
+ActiveRecord::Schema.define(version: 2019_04_11_073941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2019_04_08_045858) do
     t.string "uf"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cod_ibge"], name: "cod_ibge", unique: true
   end
 
   create_table "events", force: :cascade do |t|
@@ -31,7 +32,7 @@ ActiveRecord::Schema.define(version: 2019_04_08_045858) do
     t.integer "event_type"
     t.json "event_files"
     t.bigint "user_id"
-    t.integer "event_status"
+    t.integer "event_status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "votes_up"
@@ -89,6 +90,8 @@ ActiveRecord::Schema.define(version: 2019_04_08_045858) do
     t.string "unconfirmed_email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "reputation"
+    t.text "address"
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|

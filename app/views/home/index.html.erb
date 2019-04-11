@@ -7,7 +7,7 @@
    crossorigin=""></script>
 
 <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.js"></script>
 
 <style>
 	#mapid { 
@@ -15,6 +15,11 @@
 		width: 100%;
 		z-index: 10;
 	}
+
+    .awesome-marker i {
+        font-size: 28px;
+        margin-top: 8px;
+    }
 
 	@media only screen and (max-device-width: 480px) {
 		#mapid{
@@ -93,7 +98,7 @@
                 </div>
                 
                 <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                    <div class="info-box bg-deep-orange hover-expand-effect">
+                    <div class="info-box bg-black hover-expand-effect">
                         <div class="icon">
                             <!--<i class="material-icons">person_add</i>-->
                             <i class="fas fa-skull-crossbones"></i>
@@ -132,17 +137,15 @@
                                 <input type="hidden" id="event_lat" name="event[lat]" value="0" />
                                 <input type="hidden" id="event_lon" name="event[lon]" value="0" />
                                 <input type="hidden" id="event_user_id" name="event[user_id]" value="0" />
+                                <input type="hidden" id="event_city_id" name="event[city_id]" value="0" />
+
                                 <div class="form-group form-float">
                                     <div class="form-line">
                                         <textarea name="event[description]" id="event_description" class="form-control"></textarea> 
                                         <label class="form-label">Descrição do Problema</label>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="form-line">
-                                        
-                                    </div>
-                                </div>
+
                                 <div class="form-group">
                                     <input type="checkbox" name="event[anonymous]" id="event_anonymous" checked />
                                     <label for="event_anonymous">Não quero me identificar</label>
@@ -165,6 +168,70 @@
 
     var markers = [];
 
+    var cities_json = <%= City.where(nil).to_json.html_safe %>;
+    var events_json = <%= Event.where(nil).to_json.html_safe %>;
+
+    /*$.ajax({
+        type: "GET",
+        url: "https://servicodados.ibge.gov.br/api/v2/malhas/35/?qualidade=4&resolucao=5&formato=application/vnd.geo+json",
+        success: function(data){
+            console.log("Load: ", data);
+            L.geoJSON(data,{
+                filter: function(feature, layer) {
+                    return feature.properties.codarea == "3515004";
+                }
+            }).addTo(mymap);
+        },
+        error: function(data){
+            console.log("Erro ao tentar carregar municipios ibge");
+        }
+    });*/
+
+    $.each(events_json, function(k,v){
+        var pos = [parseFloat(v.lat), parseFloat(v.lon)];
+        
+        var icon_class = "";
+
+        switch(v.event_type){
+            case 0: icon_class = "times"; icon_color = "red"; break;
+            case 1: icon_class = "exclamation"; icon_color = "orange"; break;
+            case 2: icon_class = "trash"; icon_color = "green"; break;
+            case 3: icon_class = "water"; icon_color = "cyan"; break;
+            case 4: icon_class = "user-secret"; icon_color = "black"; break;
+            default: icon_class = "thumbs-up"; icon_color = "gray"; break;
+        }
+
+        var icon = L.AwesomeMarkers.icon({
+            icon: icon_class,
+            iconColor: icon_color,
+            markerColor: "red",
+            className: 'awesome-marker awesome-marker-square',
+            prefix: 'fa'
+        });
+
+        /*var icon =  L.divIcon({
+            html: '<i class="fa fa-truck" style="color: red"></i>',
+            iconSize: [100, 100],
+            className: 'myDivIcon'
+          })*/
+
+        marker = L.marker(pos, {icon: icon});
+        marker.addTo(mymap);
+
+        markers.push(marker);
+    });
+
+    console.log("Markers Carregados: ", markers);
+
+    function find_city_by_names(names){
+        console.log("Filtrar por nomes: ", names);
+        var city = $.grep(cities_json, function(city){
+            return (names.toUpperCase().indexOf(city.name.toUpperCase()) > -1);
+        });
+
+        return city;
+    }
+
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 	    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 	    maxZoom: 18,
@@ -181,11 +248,11 @@
 
 	    var conteudo = "";
 
-	    conteudo += "<button type=\"button\" data-event-type=\"0\" tabindex=\"0\" data-title=\"Indicação de Problemas na Via\" data-toggle=\"modal\" data-color=\"red\" data-target=\"#modal-problema\" data-coords=\""+e.latlng.toString()+"\" class=\"btn bg-red btn-circle-lg waves-effect waves-circle waves-float btn-problema\"><i class=\"fas fa-times\"></i></button>&nbsp;";
+	    conteudo += "<button type=\"button\" data-event-type=\"0\" tabindex=\"0\" data-title=\"Indicação de Problemas na Via\" data-toggle=\"modal\" data-color=\"red\" data-target=\"#modal-problema\" data-coords=\""+e.latlng.toString()+"\" class=\"btn bg-red btn-circle-lg waves-effect waves-circle waves-float btn-problema\"><i class=\"fa fa-times\"></i></button>&nbsp;";
 
-	    conteudo += "<button type=\"button\" data-color=\"orange\" data-event-type=\"1\" tabindex=\"0\" data-title=\"Indicação de Incidentes\" data-toggle=\"modal\" data-target=\"#modal-problema\" data-coords=\""+e.latlng.toString()+"\" class=\"btn bg-orange btn-circle-lg waves-effect waves-circle waves-float btn-problema\"><i class=\"fas fa-exclamation  \"></i></button>&nbsp;";
+	    conteudo += "<button type=\"button\" data-color=\"orange\" data-event-type=\"1\" tabindex=\"0\" data-title=\"Indicação de Incidentes\" data-toggle=\"modal\" data-target=\"#modal-problema\" data-coords=\""+e.latlng.toString()+"\" class=\"btn bg-orange btn-circle-lg waves-effect waves-circle waves-float btn-problema\"><i class=\"fa fa-exclamation  \"></i></button>&nbsp;";
 
-	    conteudo += "<button type=\"button\" data-color=\"green\" data-event-type=\"2\" tabindex=\"0\" data-toggle=\"modal\" data-title=\"Indicação de Lixo irregular\" data-target=\"#modal-problema\" data-coords=\""+e.latlng.toString()+"\" class=\"btn bg-green btn-circle-lg waves-effect waves-circle waves-float btn-problema\"><i class=\"fas fa-trash\"></i></button>&nbsp;";
+	    conteudo += "<button type=\"button\" data-color=\"green\" data-event-type=\"2\" tabindex=\"0\" data-toggle=\"modal\" data-title=\"Indicação de Lixo irregular\" data-target=\"#modal-problema\" data-coords=\""+e.latlng.toString()+"\" class=\"btn bg-green btn-circle-lg waves-effect waves-circle waves-float btn-problema\"><i class=\"fa fa-trash\"></i></button>&nbsp;";
 
 	    conteudo += "<button type=\"button\" data-color=\"cyan\" data-event-type=\"3\" tabindex=\"0\" data-coords=\""+e.latlng.toString()+"\" data-title=\"Indicação de Inundações/Desmoronamentos\" data-toggle=\"modal\" data-target=\"#modal-problema\" class=\"btn bg-cyan btn-circle-lg waves-effect waves-circle waves-float btn-problema\"><i class=\"fas fa-water\"></i></button>&nbsp;";
 
@@ -217,6 +284,24 @@
       modal.find("#event_description").val("");
 	  //modal.find(".modal-content").removeClass("modal-col-*").addClass("modal-col-"+button.data("color"));
 
+      $.ajax({
+        type: "GET",
+        url: "https://nominatim.openstreetmap.org/reverse?",
+        data: {format: "json", lat: parseFloat(coords[0]), lon: parseFloat(coords[1])},
+        success: function(data){
+            //console.log("Cidade Localizada por Coordenada: ", data.address.city);
+            var city = find_city_by_names(data.address.city);
+            //console.log("City: ", city);
+            if(city != undefined && city != null){
+
+                modal.find("#event_city_id").val(city[0].id);
+            }
+        },
+        error: function(data){
+            console.log("Erro no Reverse City: ", data);
+        }
+      })
+
 	  $(document).on('click', '.btn-ok', function(eok){
 	  	var parent = $($(this).get(0).parentElement.parentElement);
 	  	console.log(parent.find("#form_problema").serialize());
@@ -227,6 +312,7 @@
           data: parent.find("#form_problema").serialize(),
           success: function(data){
             console.log("Sucesso: ",data);
+            modal.modal('hide');
           },
           error: function(data){
             console.log("Erro: ",data);
