@@ -2,6 +2,10 @@ class HomeController < ApplicationController
 	def index
 		@events = Event.where(nil)
 
+		@teste = Event.all
+
+		puts @teste.inspect
+
 		@count_holes = @events.where(event_type: Event.types[:hole]).count
 		@count_reclamation = @events.where(event_type: Event.types[:reclamation]).count
 		@count_trash = @events.where(event_type: Event.types[:trash]).count

@@ -34,6 +34,15 @@
             font-family: monospace;
     }
 
+    .fa-chevron-right{
+        opacity: 0.5;
+    }
+
+    .fa-chevron-right:hover{
+        opacity: 1;
+        cursor: pointer ;
+    }
+
 	@media only screen and (max-device-width: 480px) {
 		#mapid{
 			height: 480px;
@@ -141,6 +150,7 @@
                             						
 							<form id="form_problema" name="form-problema" action="/create_event" method="POST">
 								<input type="hidden" id="event_type" name="event[event_type]" value="0" />
+                                <input type="hidden" id="event_type" name="event[event_status]" value="0" />
                                 <input type="hidden" id="event_lat" name="event[lat]" value="0" />
                                 <input type="hidden" id="event_lon" name="event[lon]" value="0" />
                                 <input type="hidden" id="event_user_id" name="event[user_id]" value="0" />
@@ -189,9 +199,10 @@
     var hash = new L.Hash(mymap);
 
     var sidebar = L.control.sidebar('sidebar-leaflet', {
-            closeButton: true,
-            position: 'right'
+        closeButton: true,
+        position: 'right'
     });
+
     mymap.addControl(sidebar);
 
     /*setTimeout(function () {
@@ -281,9 +292,9 @@
 
     function onClickMarker(e){
         var event = e.target.options.event;
-
         //var content = "<div class=\"card\"><div class=\"header\"><h2>"+e.latlng+"</h2>";
         var content = "";
+            content+= '<i class="fas fa-chevron-right fa-lg" onclick="sidebar.hide()"></i>';
             content+= "<div class=\"body\">";
             content+= "<div id=\"carousel-example-generic\" class=\"carousel slide\" data-ride=\"carousel\">";
             
@@ -323,8 +334,8 @@
             //content+= "<div class=\"row\"><div class=\"col-md-12\">"+event.description+"</div></div>";
             content+= "<br/>";
             content+= "<div class=\"row\">"
-                content+= "<div class=\"col-md-6\"><button class=\"btn btn-danger btn-block\"><i class=\"fa fa-thumbs-down\"></i></a><span class=\"badge\">"+1+"</span></button></div>";
-                content+= "<div class=\"col-md-6\"><button class=\"btn btn-success btn-block\"><i class=\"fa fa-thumbs-up\"></i></a><span class=\"badge\">"+1+"</span></button></div>";
+                content+= "<div class=\"col-md-6\"><button class=\"btn btn-danger btn-block btn-thumbs-up\" onclick='votar_evento(" + event.id  +", true)'><i class=\"fa fa-thumbs-down\"></i></a><span class=\"badge\">"+1+"</span></button></div>";
+                content+= "<div class=\"col-md-6\"><button class=\"btn btn-success btn-block btn-thumbs-down\" onclick='votar_evento(" + event.id + ", false)'><i class=\"fa fa-thumbs-up\"></i></a><span class=\"badge\">"+1+"</span></button></div>";
             content+= "</div>";
             content+= "<br/>";
             content+= "<div class=\"row\"><div class=\"col-md-12\"><button type=\"button\" class=\"btn bg-deep-purple btn-block btn-lg waves-effect\">Ver detalhes</button></div></div>";
@@ -333,6 +344,30 @@
 
         sidebar.setContent(content);
         sidebar.show();
+    }
+
+    function votar_evento(evento_id,voto){
+        // console.log("VOTANDO", evento, voto);
+         $.ajax({
+          type: "POST",
+          url: "/votes.json",
+          data: {vote:{event_id: evento_id, user_id: current_user_id, liked: voto}},
+          success: function(data){
+            console.log(data);
+            // $(document).find(".btn-thumbs-up").html('<i class="fa fa-thumbs-up"></i><span class="badge">' + data.+ '</span>')
+            // mymap.setView([data.lat, data.lon]);
+            // set_marker_in_map(data, true);
+            
+            // modal.modal('hide');
+
+
+
+          },
+          error: function(data){
+            console.log("Erro: ",data);
+          }
+        });
+
     }
 
 	function onMapClick(e) {
@@ -384,7 +419,7 @@
         success: function(data){
             //console.log("Cidade Localizada por Coordenada: ", data.address.city);
             var city = find_city_by_names(data.address.city);
-            //console.log("City: ", city);
+            console.log("City: ", city);
             if(city != undefined && city != null){
 
                 modal.find("#event_city_id").val(city[0].id);
@@ -394,8 +429,9 @@
             console.log("Erro no Reverse City: ", data);
         }
       })
+      $(".btn-ok").unbind();
 
-	  $(document).on('dblclick', '.btn-ok', function(eok){
+	  $(".btn-ok").on('click', function(eok){
 	  	var parent = $($(this).get(0).parentElement.parentElement);
 	  	console.log(parent.find("#form_problema").serialize());
         
@@ -404,7 +440,7 @@
           url: "/events.json",
           data: parent.find("#form_problema").serialize(),
           success: function(data){
-            //console.log("Sucesso: ",data);
+            console.log("Sucesso: ",data);
             //
             mymap.setView([data.lat, data.lon]);
             set_marker_in_map(data, true);

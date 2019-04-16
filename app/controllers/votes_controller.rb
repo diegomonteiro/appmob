@@ -25,9 +25,10 @@ class VotesController < ApplicationController
   # POST /votes.json
   def create
     @vote = Vote.new(vote_params)
-
+    puts @vote.inspect
     respond_to do |format|
       if @vote.save
+
         format.html { redirect_to @vote, notice: 'Vote was successfully created.' }
         format.json { render :show, status: :created, location: @vote }
       else
@@ -69,6 +70,6 @@ class VotesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def vote_params
-      params.fetch(:vote, {})
+      params.require(:vote).permit(:user_id, :liked, :event_id)
     end
 end

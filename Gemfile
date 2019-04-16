@@ -41,6 +41,8 @@ gem 'devise'
 gem 'cancancan'
 gem 'rolify'
 
+gem 'active_model_serializers', '0.10.0'
+
 # PaperTrail - Make Trace in Changes
 gem 'paper_trail'
 
