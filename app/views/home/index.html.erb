@@ -19,7 +19,7 @@
 
 <style>
 	#mapid { 
-		height: 640px;
+		height: 700px;
 		width: 100%;
 		z-index: 10;
 	}
@@ -30,8 +30,8 @@
     }
 
     #sidebar-leaflet {
-            padding: 24px;
-            font-family: monospace;
+            padding: 20px;
+            /*font-family: monospace;*/
     }
 
 	@media only screen and (max-device-width: 480px) {
@@ -193,6 +193,8 @@
             position: 'right'
     });
     mymap.addControl(sidebar);
+
+    mymap.doubleClickZoom.disable();
 
     /*setTimeout(function () {
         sidebar.show();
