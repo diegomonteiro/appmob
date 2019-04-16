@@ -71,3 +71,9 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # Rest Client - To Manipulate JSON Data Sources
 gem 'rest-client'
+
+# Gem to use Env Variables
+gem 'figaro'
+
+# Gem to calculate Time elapsed in Humazine methods
+gem 'time_difference'
