@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_11_073941) do
+ActiveRecord::Schema.define(version: 2019_04_16_041701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,17 @@ ActiveRecord::Schema.define(version: 2019_04_11_073941) do
     t.index ["cod_ibge"], name: "cod_ibge", unique: true
   end
 
+  create_table "event_responses", force: :cascade do |t|
+    t.bigint "event_id"
+    t.bigint "user_id"
+    t.text "description"
+    t.integer "event_status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_event_responses_on_event_id"
+    t.index ["user_id"], name: "index_event_responses_on_user_id"
+  end
+
   create_table "events", force: :cascade do |t|
     t.text "description"
     t.float "lat"
@@ -35,8 +46,8 @@ ActiveRecord::Schema.define(version: 2019_04_11_073941) do
     t.integer "event_status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "votes_up"
-    t.integer "votes_down"
+    t.integer "votes_up", default: 0
+    t.integer "votes_down", default: 0
     t.index ["city_id"], name: "index_events_on_city_id"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
@@ -113,6 +124,21 @@ ActiveRecord::Schema.define(version: 2019_04_11_073941) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  create_table "votes", force: :cascade do |t|
+    t.bigint "event_id"
+    t.bigint "user_id"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "liked"
+    t.index ["event_id"], name: "index_votes_on_event_id"
+    t.index ["user_id"], name: "index_votes_on_user_id"
+  end
+
+  add_foreign_key "event_responses", "events"
+  add_foreign_key "event_responses", "users"
   add_foreign_key "events", "cities"
   add_foreign_key "events", "users"
+  add_foreign_key "votes", "events"
+  add_foreign_key "votes", "users"
 end

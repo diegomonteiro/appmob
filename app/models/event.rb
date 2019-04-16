@@ -1,6 +1,8 @@
 class Event < ApplicationRecord
   belongs_to :city
   belongs_to :user
+  has_many :event_responses
+  has_many :votes
 
   enum type: [:hole, :reclamation , :trash , :dissaster , :assault ]
   enum status: [:pendent , :working , :solved ]

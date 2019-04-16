@@ -6,8 +6,16 @@
    integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
    crossorigin=""></script>
 
-<link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.js"></script>
+
+<script src="http://mlevans.com/leaflet-hash/javascripts/leaflet-hash.js"></script>  
+<!--<script src="https://turbo87.github.io/sidebar-v2/js/leaflet-sidebar.js"></script>-->
+<link rel="stylesheet" href="http://turbo87.github.io/leaflet-sidebar/src/L.Control.Sidebar.css" />
+<script src="http://turbo87.github.io/leaflet-sidebar/src/L.Control.Sidebar.js"></script>
+    
+<script src="https://unpkg.com/leaflet-responsive-popup@0.6.3/leaflet.responsive.popup.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-responsive-popup@0.6.3/leaflet.responsive.popup.css" />
 
 <style>
 	#mapid { 
@@ -17,8 +25,13 @@
 	}
 
     .awesome-marker i {
-        font-size: 28px;
-        margin-top: 8px;
+        font-size: 12px;
+        margin-top: 12px;
+    }
+
+    #sidebar-leaflet {
+            padding: 24px;
+            font-family: monospace;
     }
 
 	@media only screen and (max-device-width: 480px) {
@@ -30,22 +43,16 @@
 	}
 </style>
 
-
-
-
 <div class="row clearfix">
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 	<div class="card">
-		
-		<!--<div class="header">
-		
-		</div>-->
-		<div id="mapid">
-			<!--<div id="mapid"></div>-->
-		</div>
+        <div id="sidebar-leaflet"></div>
+		<div id="mapid"></div>
 	</div>
 </div>
 </div>
+
+
 
 <div class="row clearfix">
                 <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
@@ -149,6 +156,10 @@
                                 <div class="form-group">
                                     <input type="checkbox" name="event[anonymous]" id="event_anonymous" checked />
                                     <label for="event_anonymous">Não quero me identificar</label>
+                                </div>
+
+                                <div id="event_responses" class="form-group">
+                                    
                                 </div>                          
                              	
                             </form>
@@ -164,60 +175,60 @@
 
 
  <script>
-	var mymap = L.map('mapid').setView([-23.5252, -46.2512], 13);
+	var mymap = L.map('mapid').setView([-23.6500, -46.8442], 13);
 
     var markers = [];
 
     var cities_json = <%= City.where(nil).to_json.html_safe %>;
     var events_json = <%= Event.where(nil).to_json.html_safe %>;
+    var current_user_id = <%= (current_user.nil?) ? 0 : current_user.id %>;
+    var icon_class = "";
+    var icon_color = "";
+    var popup = L.popup();
 
-    /*$.ajax({
-        type: "GET",
-        url: "https://servicodados.ibge.gov.br/api/v2/malhas/35/?qualidade=4&resolucao=5&formato=application/vnd.geo+json",
-        success: function(data){
-            console.log("Load: ", data);
-            L.geoJSON(data,{
-                filter: function(feature, layer) {
-                    return feature.properties.codarea == "3515004";
-                }
-            }).addTo(mymap);
-        },
-        error: function(data){
-            console.log("Erro ao tentar carregar municipios ibge");
-        }
-    });*/
+    var hash = new L.Hash(mymap);
+
+    var sidebar = L.control.sidebar('sidebar-leaflet', {
+            closeButton: true,
+            position: 'right'
+    });
+    mymap.addControl(sidebar);
+
+    /*setTimeout(function () {
+        sidebar.show();
+    }, 500);*/
 
     $.each(events_json, function(k,v){
         var pos = [parseFloat(v.lat), parseFloat(v.lon)];
-        
-        var icon_class = "";
 
         switch(v.event_type){
             case 0: icon_class = "times"; icon_color = "red"; break;
             case 1: icon_class = "exclamation"; icon_color = "orange"; break;
             case 2: icon_class = "trash"; icon_color = "green"; break;
-            case 3: icon_class = "water"; icon_color = "cyan"; break;
+            case 3: icon_class = "cloud-showers-heavy"; icon_color = "blue"; break;
             case 4: icon_class = "user-secret"; icon_color = "black"; break;
             default: icon_class = "thumbs-up"; icon_color = "gray"; break;
         }
 
         var icon = L.AwesomeMarkers.icon({
-            icon: icon_class,
-            iconColor: icon_color,
-            markerColor: "red",
-            className: 'awesome-marker awesome-marker-square',
-            prefix: 'fa'
+            "icon": icon_class,
+            "markerColor": icon_color,
+            "className": "awesome-marker awesome-marker-square",
+            "prefix": "fa"
         });
 
-        /*var icon =  L.divIcon({
-            html: '<i class="fa fa-truck" style="color: red"></i>',
-            iconSize: [100, 100],
-            className: 'myDivIcon'
-          })*/
+        var content = "";
 
-        marker = L.marker(pos, {icon: icon});
+        if(v.user_id == current_user_id){
+            content = "Editar Evento";
+        }
+        else
+        {
+            content = "<a href='#' style=\"color: white\" class=\"btn btn-success\"><i class='fa fa-thumbs-up'></i></a><a href='#' style=\"color: white\" class=\"btn btn-danger\"><i class='fa fa-thumbs-down'></i></a>";
+        }
+
+        marker = L.marker(pos, {icon: icon, 'event': v}).on('click', onClickMarker);;
         marker.addTo(mymap);
-
         markers.push(marker);
     });
 
@@ -232,6 +243,31 @@
         return city;
     }
 
+    function set_marker_in_map(event, anonymous){
+
+        switch(event.event_type){
+            case 0: icon_class = "times"; icon_color = "red"; break;
+            case 1: icon_class = "exclamation"; icon_color = "orange"; break;
+            case 2: icon_class = "trash"; icon_color = "green"; break;
+            case 3: icon_class = "cloud-showers-heavy"; icon_color = "blue"; break;
+            case 4: icon_class = "user-secret"; icon_color = "black"; break;
+            default: icon_class = "thumbs-up"; icon_color = "gray"; break;
+        }
+
+        var icon = L.AwesomeMarkers.icon({
+            icon: icon_class,
+            /*iconColor: "black",*/
+            markerColor: icon_color,
+            className: 'awesome-marker awesome-marker-square',
+            prefix: 'fa'
+        });
+
+        var marker = L.marker([event.lat, event.lon], {icon: icon, 'event': event}).on('click', onClickMarker);
+
+        marker.addTo(mymap);
+        markers.push(marker);
+    }
+
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 	    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 	    maxZoom: 18,
@@ -239,12 +275,69 @@
 	    accessToken: 'pk.eyJ1IjoiZGllZ29tb250ZWlybyIsImEiOiJjaWtpeTNucGYwNTdudTBtNjMzeW80Y2FsIn0.D1Y1o7NvJA6hwrKAs_NcIg'
 	}).addTo(mymap);
 
-	var popup = L.popup();
+	
 
 	$(window).on("resize", function () { $("#mapid").height($(window).height()-300); mymap.invalidateSize(); }).trigger("resize");
 
+    function onClickMarker(e){
+        var event = e.target.options.event;
+
+        //var content = "<div class=\"card\"><div class=\"header\"><h2>"+e.latlng+"</h2>";
+        var content = "";
+            content+= "<div class=\"body\">";
+            content+= "<div id=\"carousel-example-generic\" class=\"carousel slide\" data-ride=\"carousel\">";
+            
+            content+= "<ol class=\"carousel-indicators\">";
+                content+= "<li data-target=\"#carousel-example-generic\" data-slide-to=\"0\" class=\"\"></li>";
+                content+= "<li data-target=\"#carousel-example-generic\" data-slide-to=\"1\" class=\"active\"></li>";
+                content+= "<li data-target=\"#carousel-example-generic\" data-slide-to=\"2\" class=\"\"></li>";
+            content+= "</ol>";
+
+
+            content+= "<div class=\"carousel-inner\" role=\"listbox\">";
+                content+= "<div class=\"item\">";
+                    content+= "<img src=\"http://s.glbimg.com/jo/g1/f/original/2012/02/09/obras-pista_600x400.jpg\">";
+                content+= "</div>";
+                content+= "<div class=\"item active\">";
+                    content+= "<img src=\"https://img.7segundos.com.br/6ZXqva0VYXKBM6SFRYW6yWwtpNE=/460x320/smart/s3.7segundos.com.br/uploads/imagens/73992-4_jpg.jpeg\">";
+                content+= "</div>";
+                content+= "<div class=\"item\">";
+                    content+= "<img src=\"http://midias.gazetaonline.com.br/_midias/jpg/2018/11/12/buraco1-5873723.jpg\">";
+                content+= "</div>";
+            content+= "</div>";
+
+
+            
+            content+="<a class=\"left carousel-control\" href=\"#carousel-example-generic\" role=\"button\" data-slide=\"prev\">";
+            content+="<span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>";
+            content+="<span class=\"sr-only\">Previous</span>";
+            content+="</a>";
+            content+="<a class=\"right carousel-control\" href=\"#carousel-example-generic\" role=\"button\" data-slide=\"next\">";
+            content+="<span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>";
+            content+="<span class=\"sr-only\">Next</span>";
+            content+="</a>";
+            content+="</div>";
+            content+="</div>";
+            content+="</div>";
+
+            //content+= "<div class=\"row\"><div class=\"col-md-12\">"+event.description+"</div></div>";
+            content+= "<br/>";
+            content+= "<div class=\"row\">"
+                content+= "<div class=\"col-md-6\"><button class=\"btn btn-danger btn-block\"><i class=\"fa fa-thumbs-down\"></i></a><span class=\"badge\">"+1+"</span></button></div>";
+                content+= "<div class=\"col-md-6\"><button class=\"btn btn-success btn-block\"><i class=\"fa fa-thumbs-up\"></i></a><span class=\"badge\">"+1+"</span></button></div>";
+            content+= "</div>";
+            content+= "<br/>";
+            content+= "<div class=\"row\"><div class=\"col-md-12\"><button type=\"button\" class=\"btn bg-deep-purple btn-block btn-lg waves-effect\">Ver detalhes</button></div></div>";
+
+            content+= "<br/><div class=\"row\"><div class=\"col-md-12\"><blockquote class=\"m-b-25\"><p>"+event.description+"</p></blockquote></div></div>";
+
+        sidebar.setContent(content);
+        sidebar.show();
+    }
+
 	function onMapClick(e) {
 	    /*var conteudo = "<button type=\"button\" class=\"btn btn-primary btn-circle-lg waves-effect waves-circle waves-float\"><i class=\"material-icons\">extension</i></button>";*/
+        sidebar.hide();
 
 	    var conteudo = "";
 
@@ -258,9 +351,7 @@
 
 	    conteudo += "<button type=\"button\" data-color=\"black\" data-event-type=\"4\" tabindex=\"0\" data-coords=\""+e.latlng.toString()+"\" data-title=\"Indicação de Problemas na Segurança\" data-toggle=\"modal\" data-target=\"#modal-problema\" class=\"btn bg-black btn-circle-lg waves-effect waves-circle waves-float btn-problema\"><i class=\"fas fa-skull-crossbones\"></i></button>&nbsp;";   
 
-	    popup.setLatLng(e.latlng).setContent(conteudo).openOn(mymap);
-
-	    
+	    popup.setLatLng(e.latlng).setContent(conteudo).openOn(mymap);	    
 	}
 
 	/*mymap.on('popupopen', function(e){
@@ -284,6 +375,8 @@
       modal.find("#event_description").val("");
 	  //modal.find(".modal-content").removeClass("modal-col-*").addClass("modal-col-"+button.data("color"));
 
+      popup.remove();
+
       $.ajax({
         type: "GET",
         url: "https://nominatim.openstreetmap.org/reverse?",
@@ -302,7 +395,7 @@
         }
       })
 
-	  $(document).on('click', '.btn-ok', function(eok){
+	  $(document).on('dblclick', '.btn-ok', function(eok){
 	  	var parent = $($(this).get(0).parentElement.parentElement);
 	  	console.log(parent.find("#form_problema").serialize());
         
@@ -311,8 +404,15 @@
           url: "/events.json",
           data: parent.find("#form_problema").serialize(),
           success: function(data){
-            console.log("Sucesso: ",data);
+            //console.log("Sucesso: ",data);
+            //
+            mymap.setView([data.lat, data.lon]);
+            set_marker_in_map(data, true);
+            
             modal.modal('hide');
+
+
+
           },
           error: function(data){
             console.log("Erro: ",data);
@@ -322,7 +422,7 @@
 	  });
 	})
 
-	$(document).on('click', '.btn-problema', function(e){
+	/*$(document).on('click', '.btn-problema', function(e){
 		//console.log("Botão Disparado: ", e);
 		var params = e.originalEvent.originalTarget.offsetParent.dataset.coords;
 		var coords = params.substring(params.indexOf("(")+1, params.indexOf(")"));
@@ -343,7 +443,7 @@
 
 		marker.addTo(mymap);
 		
-	});
+	});*/
 
-	mymap.on('click', onMapClick);
+	mymap.on('dblclick', onMapClick);
  </script>
