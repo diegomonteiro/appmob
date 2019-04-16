@@ -1,24 +1,34 @@
-# README
+# Leia-me
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+O sistema reclame fácil foi desenvolvido com o intuíto de fornecer aos cidadãos uma
+maneira fácil e intuítiva de registrar as ocorrências e problemas enfrentados em
+diversos municípios. O sistema foi desenvolvido em plataforma aberta (Open Source),
+tendo como base os seguintes softwares:
 
-Things you may want to cover:
+* Pré requisitos
 
-* Ruby version
+Para implantar o software siga as instruções abaixo:
 
-* System dependencies
+```
+sudo apt install curl
+curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
+curl -sSL https://get.rvm.io | bash
+rvm install ruby-2.6.0
+echo "source $HOME/.rvm/scripts/rvm" >> ~/.bash_profile
+sudo apt install nodejs
+```
+* Configuração
 
-* Configuration
+Para configurar navegue até o diretório da aplicação execute os seguintes procedimentos:
 
-* Database creation
+```
+gem install bundler
+gem install pg
+```
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
+* Criação e Inicialização do Banco de Dados
+```
+rake db:setup
+rake db:migrate
+```
 * ...
