@@ -21,7 +21,6 @@ ActiveRecord::Schema.define(version: 2019_04_16_181508) do
     t.string "uf"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["cod_ibge"], name: "cod_ibge", unique: true
   end
 
   create_table "event_responses", force: :cascade do |t|
@@ -43,7 +42,7 @@ ActiveRecord::Schema.define(version: 2019_04_16_181508) do
     t.integer "event_type"
     t.json "event_files"
     t.bigint "user_id"
-    t.integer "event_status", default: 0
+    t.integer "event_status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "votes_up", default: 0
