@@ -10,25 +10,47 @@ class Event < ApplicationRecord
 
   mount_uploaders :event_files, EventFileUploader
 
+  has_paper_trail
+
   scope :by_user, ->(user_id) { where("user_id = ?", user_id ) }
 
-  def self.calc_reputation_user(user_id)
-  	events = Event.by_user(user_id)
-  	user = User.find(user_id)
-  	
-    votes = Vote.where("event_id IN (?)", events.ids).group(:liked).count
+  def self.calc_reputation_users
+    users = User.where(nil)
 
-    unless votes.blank?
-      count_down = votes[false]
-      count_up   = votes[true]  
+    users.each do |user|
 
-      total_votes = count_up+count_down
+    	events = Event.by_user(user_id)
+    	user = User.find(user_id)
+    	
+      unless events.ids.blank?
+        votes = Vote.where("event_id IN (?)", events.ids).group(:liked).count
+      else
+        votes = {:false => 0, :true => 0}
+      end
 
-      per_up = (count_up * 100 )/(total_votes)
-      per_down = (count_up * 100 )/(total_votes)
-      diff_days = TimeDifference.between(user.created_at, Time.zone.now).in_days
+      unless votes.blank?
+        count_down = (votes[false].nil?) ? 0 : votes[false]
+        count_up   = (votes[true].nil?) ? 0 : votes[true]  
 
-      ((per_up * 5) + (per_down * 2) + (diff_days * 3))/100
+        total_votes = count_up+count_down
+
+        if total_votes > 0
+          per_up = (count_up * 100 )/(total_votes)
+          per_down = (count_up * 100 )/(total_votes)
+        else
+          per_up = 0
+          per_down = 0
+        end
+
+        diff_days = TimeDifference.between(user.created_at, Time.zone.now).in_days
+
+        ret = ((per_up * 5) + (per_down * 2) + (diff_days * 3))/100
+
+        rep = (ret.nil?) ? 0 : (ret > 10) ? 10 : ret
+
+        user.reputation = rep.to_f
+        user.save
+      end
     end
 
     

@@ -85,3 +85,6 @@ gem 'carrierwave'
 
 # Gem to I18n To Enum Types
 gem 'human_enum_name'
+
+# Schedule Gem Jobs
+gem 'whenever', require: false
