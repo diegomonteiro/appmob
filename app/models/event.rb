@@ -19,8 +19,8 @@ class Event < ApplicationRecord
 
     users.each do |user|
 
-    	events = Event.by_user(user_id)
-    	user = User.find(user_id)
+    	events = Event.by_user(user.id)
+    	user = User.find(user.id)
     	
       unless events.ids.blank?
         votes = Vote.where("event_id IN (?)", events.ids).group(:liked).count
