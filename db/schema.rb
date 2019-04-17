@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_16_041701) do
+ActiveRecord::Schema.define(version: 2019_04_16_181508) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,8 +45,9 @@ ActiveRecord::Schema.define(version: 2019_04_16_041701) do
     t.integer "event_status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "votes_up"
-    t.integer "votes_down"
+    t.integer "votes_up", default: 0
+    t.integer "votes_down", default: 0
+    t.boolean "anonymous"
     t.index ["city_id"], name: "index_events_on_city_id"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
@@ -130,6 +131,7 @@ ActiveRecord::Schema.define(version: 2019_04_16_041701) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "liked"
+    t.index ["event_id", "user_id"], name: "votes_event_id_user_id_key", unique: true
     t.index ["event_id"], name: "index_votes_on_event_id"
     t.index ["user_id"], name: "index_votes_on_user_id"
   end

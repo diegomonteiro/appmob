@@ -1,6 +1,6 @@
 
 
-<div class="login-box">
+<!--<div class="login-box">
         <% if resource.errors.any? %>
             <div class="error">
                 <strong><%= pluralize(resource.errors.count, "Error") %></strong>
@@ -38,24 +38,17 @@
                             <label for="rememberme">Lembrar-me</label>
                         </div>
                         <div class="col-xs-4">
-                            <!--<button class="btn btn-block bg-green waves-effect" type="submit">Acessar</button>-->
+                            
                             <%= f.submit "Acessar", class: "btn btn-block bg-green waves-effect" %>
                         </div>
                     </div>
-                    <!--<div class="row m-t-15 m-b--20">
-                        <div class="col-xs-6">
-                            
-                        </div>
-                        <div class="col-xs-6 align-right">
-                            <a href="forgot-password.html">Forgot Password?</a>
-                        </div>
-                    </div>-->
+                    
                 <% end %>
             </div>
         </div>
-    </div>
+    </div>-->
     
-<!--<h2>Log in</h2>
+<h2>Log in</h2>
 
 <% if resource.errors.any? %>
     <div class="error">
@@ -89,6 +82,6 @@
   <div class="actions">
     <%= f.submit "Log in" %>
   </div>
-<% end %>-->
+<% end %>
 
 <%= render "users/shared/links" %>
