@@ -28,6 +28,8 @@ class ApplicationController < ActionController::Base
     	user_signed_in? ? current_user.id : 'Public user'  # or whatever
   	end
 
+  	
+
   	protected
 	  def configure_devise_params
 	    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :username, :email, :password, :password_confirmation])

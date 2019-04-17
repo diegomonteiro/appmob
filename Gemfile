@@ -82,3 +82,6 @@ gem 'time_difference'
 
 # Gem To uploads files
 gem 'carrierwave'
+
+# Gem to I18n To Enum Types
+gem 'human_enum_name'

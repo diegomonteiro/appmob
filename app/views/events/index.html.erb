@@ -37,7 +37,7 @@
                                 <% @events.each do |event| %>
                                   <% votes = event.votes.group(:liked).count %>
                                   <tr>
-                                    <td><%= Event.types.key(event.event_type).humanize %></td>
+                                    <td><%= Event.human_enum_name(:type, Event.types.key(event.event_type)) %></td>
                                     <td><%= event.city.name unless event.city.nil? %></td>
                                     <td><%= event.created_at %></td>
                                     <!--<td><a href="/#13/<%= event.lat %>/<%= event.lon %>"><%= event.lat %>, <%= event.lon %></a></td>-->
@@ -45,7 +45,8 @@
                                     <td><%= if event.user.nil? || event.anonymous then "-" else event.user.username end %></td>                                    
                                     <td><%= if votes.has_key?(true) then votes[true] else 0 end %></td>
                                     <td><%= if votes.has_key?(false) then votes[false] else 0 end %></td>
-                                    <td><%= Event.statuses.key(event.event_status).humanize %></td>
+                                    <td><%= Event.human_enum_name(:status, Event.statuses.key(event.event_status)) %></td>
+                                    
                                   </tr>
                                   <% end %>
                                 </tbody>

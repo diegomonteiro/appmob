@@ -101,6 +101,8 @@ GEM
       activesupport (>= 4.2.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
+    human_enum_name (0.1.0)
+      activesupport (>= 4.2.0)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     io-like (0.3.0)
@@ -254,6 +256,7 @@ DEPENDENCIES
   coffee-rails (~> 4.2)
   devise
   figaro
+  human_enum_name
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
   mini_magick (~> 4.8)

@@ -31,3 +31,16 @@
 
 en:
   hello: "Hello world"
+  activerecord:
+    attributes:
+      event:
+        statuses:
+          pendent: "Pendente"
+          working: "Resolvendo"
+          solved: "Solucionado"
+        types:
+          hole: "Buraco"
+          reclamation: "Reclamação"
+          trash: "Lixo"
+          dissaster: "Disastre"
+          assault: "Assalto"
