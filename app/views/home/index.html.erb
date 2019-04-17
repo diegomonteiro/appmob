@@ -192,6 +192,7 @@
     var cities_json = <%= City.where(nil).to_json.html_safe %>;
     var events_json = <%= Event.where(nil).to_json.html_safe %>;
     var current_user_id = <%= (current_user.nil?) ? 0 : current_user.id %>;
+    var votos = <%= Vote.all.to_json.html_safe %>;
     var icon_class = "";
     var icon_color = "";
     var popup = L.popup();
@@ -334,8 +335,8 @@
             //content+= "<div class=\"row\"><div class=\"col-md-12\">"+event.description+"</div></div>";
             content+= "<br/>";
             content+= "<div class=\"row\">"
-                content+= "<div class=\"col-md-6\"><button class=\"btn btn-danger btn-block btn-thumbs-up\" onclick='votar_evento(" + event.id  +", true)'><i class=\"fa fa-thumbs-down\"></i></a><span class=\"badge\">"+1+"</span></button></div>";
-                content+= "<div class=\"col-md-6\"><button class=\"btn btn-success btn-block btn-thumbs-down\" onclick='votar_evento(" + event.id + ", false)'><i class=\"fa fa-thumbs-up\"></i></a><span class=\"badge\">"+1+"</span></button></div>";
+                content+= "<div class=\"col-md-6\"><button class=\"btn btn-danger btn-block btn-thumbs-down\" onclick='votar_evento(" + event.id  +", false)'><i class=\"fa fa-thumbs-down\"></i></a><span class=\"badge\">"+ contar_votos(event.id, false) +"</span></button></div>";
+                content+= "<div class=\"col-md-6\"><button class=\"btn btn-success btn-block btn-thumbs-up\" onclick='votar_evento(" + event.id + ", true)'><i class=\"fa fa-thumbs-up\"></i></a><span class=\"badge\">"+ contar_votos(event.id, true) +"</span></button></div>";
             content+= "</div>";
             content+= "<br/>";
             content+= "<div class=\"row\"><div class=\"col-md-12\"><button type=\"button\" class=\"btn bg-deep-purple btn-block btn-lg waves-effect\">Ver detalhes</button></div></div>";
@@ -353,8 +354,15 @@
           url: "/votes.json",
           data: {vote:{event_id: evento_id, user_id: current_user_id, liked: voto}},
           success: function(data){
-            console.log(data);
-            // $(document).find(".btn-thumbs-up").html('<i class="fa fa-thumbs-up"></i><span class="badge">' + data.+ '</span>')
+            // console.log(data);
+            // console.log(voto);
+            votos.push(data);
+            if(voto){
+                $(document).find(".btn-thumbs-up").html('<i class="fa fa-thumbs-up"></i><span class="badge">' + contar_votos(evento_id, voto) + '</span>')    
+            } else {
+                $(document).find(".btn-thumbs-down").html('<i class="fa fa-thumbs-down"></i><span class="badge">' + contar_votos(evento_id, voto) + '</span>')
+            }
+            
             // mymap.setView([data.lat, data.lon]);
             // set_marker_in_map(data, true);
             
@@ -368,6 +376,16 @@
           }
         });
 
+    }
+
+    function contar_votos(evento_id, tipo){
+        count = 0;
+        $.each(votos, function(index, voto){
+            if(voto.event_id == evento_id && voto.liked == tipo){
+                count ++;
+            }
+        })
+        return count;
     }
 
 	function onMapClick(e) {

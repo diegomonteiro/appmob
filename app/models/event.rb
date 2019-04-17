@@ -1,6 +1,4 @@
 class Event < ApplicationRecord
-  
-  include ActiveModel::Serialization
 
   belongs_to :city
   belongs_to :user
