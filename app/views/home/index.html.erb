@@ -148,7 +148,7 @@
                         </div>
                         <div class="modal-body">
                             						
-							<form id="form_problema" name="form-problema" action="/create_event" method="POST">
+							<form id="form_problema" name="form-problema" action="/create_event" method="POST" enctype="multipart/form-data">
 								<input type="hidden" id="event_type" name="event[event_type]" value="0" />
                                 <input type="hidden" id="event_type" name="event[event_status]" value="0" />
                                 <input type="hidden" id="event_lat" name="event[lat]" value="0" />
@@ -168,11 +168,18 @@
                                     <label for="event_anonymous">Não quero me identificar</label>
                                 </div>
 
+                                <div class="form-group">
+                                    <input type="file" multiple="true" name="event[event_files]" id="event_files" />
+                                    <label for="event_files">Fotos e registros visuais do problema (se houver*)</label>
+                                </div>
+
                                 <div id="event_responses" class="form-group">
                                     
                                 </div>                          
                              	
                             </form>
+
+                            <iframe id="upload_target" name="upload_target" src="#" style="width:0;height:0;border:0px solid #fff;"></iframe>                 
 
                         </div>
                         <div class="modal-footer">
@@ -337,8 +344,8 @@
             //content+= "<div class=\"row\"><div class=\"col-md-12\">"+event.description+"</div></div>";
             content+= "<br/>";
             content+= "<div class=\"row\">"
-                content+= "<div class=\"col-md-6\"><button class=\"btn btn-danger btn-block btn-thumbs-down\" onclick='votar_evento(" + event.id  +", false)'><i class=\"fa fa-thumbs-down\"></i></a><span class=\"badge\">"+ contar_votos(event.id, false) +"</span></button></div>";
-                content+= "<div class=\"col-md-6\"><button class=\"btn btn-success btn-block btn-thumbs-up\" onclick='votar_evento(" + event.id + ", true)'><i class=\"fa fa-thumbs-up\"></i></a><span class=\"badge\">"+ contar_votos(event.id, true) +"</span></button></div>";
+                content+= "<div class=\"col-md-6 col-xs-6\"><button class=\"btn btn-danger btn-block btn-thumbs-down\" onclick='votar_evento(" + event.id  +", false)'><i class=\"fa fa-thumbs-down\"></i></a><span class=\"badge\">"+ contar_votos(event.id, false) +"</span></button></div>";
+                content+= "<div class=\"col-md-6 col-xs-6\"><button class=\"btn btn-success btn-block btn-thumbs-up\" onclick='votar_evento(" + event.id + ", true)'><i class=\"fa fa-thumbs-up\"></i></a><span class=\"badge\">"+ contar_votos(event.id, true) +"</span></button></div>";
             content+= "</div>";
             content+= "<br/>";
             content+= "<div class=\"row\"><div class=\"col-md-12\"><button type=\"button\" class=\"btn bg-deep-purple btn-block btn-lg waves-effect\">Ver detalhes</button></div></div>";

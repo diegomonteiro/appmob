@@ -79,3 +79,6 @@ gem 'figaro'
 
 # Gem to calculate Time elapsed in Humazine methods
 gem 'time_difference'
+
+# Gem To uploads files
+gem 'carrierwave'

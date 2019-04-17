@@ -28,8 +28,8 @@
                                   <th>Data Criação</th>
                                   <th>Coordenadas</th>
                                   <th>Publicado por</th>
-                                  <th><i class="material-icons">thumbs-up</i>&nbsp;</th>                                  
-                                  <th><i class="material-icons">thumbs-down</i>&nbsp;</th>                                  
+                                  <th><i class="fa fa-thumbs-up col-green"></i>&nbsp;</th>                                  
+                                  <th><i class="fa fa-thumbs-down col-red"></i>&nbsp;</th>                                  
                                   <th>Status</th>
                                 </tr>
                               </thead>
@@ -43,8 +43,8 @@
                                     <!--<td><a href="/#13/<%= event.lat %>/<%= event.lon %>"><%= event.lat %>, <%= event.lon %></a></td>-->
                                     <td><%= link_to "<span class='home-link'>#{event.lat}, #{event.lon}</span>".html_safe, root_path %></td>
                                     <td><%= if event.user.nil? || event.anonymous then "-" else event.user.username end %></td>                                    
-                                    <td><%= votes["true"].to_i %></td>
-                                    <td><%= votes["false"].to_i %></td>
+                                    <td><%= if votes.has_key?(true) then votes[true] else 0 end %></td>
+                                    <td><%= if votes.has_key?(false) then votes[false] else 0 end %></td>
                                     <td><%= Event.statuses.key(event.event_status).humanize %></td>
                                   </tr>
                                   <% end %>

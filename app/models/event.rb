@@ -8,6 +8,8 @@ class Event < ApplicationRecord
   enum type: [:hole, :reclamation , :trash , :dissaster , :assault ]
   enum status: [:pendent , :working , :solved ]
 
+  mount_uploaders :event_files, EventFileUploader
+
   scope :by_user, ->(user_id) { where("user_id = ?", user_id ) }
 
   def self.calc_reputation_user(user_id)
