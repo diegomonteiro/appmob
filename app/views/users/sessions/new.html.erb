@@ -1,54 +1,4 @@
-
-
-<!--<div class="login-box">
-        <% if resource.errors.any? %>
-            <div class="error">
-                <strong><%= pluralize(resource.errors.count, "Error") %></strong>
-                <ul>
-                    <% resource.errors.each do |attr,msg| %>
-                        <li><%= msg %></li>
-                    <% end %>
-                </ul>
-            </div>
-        <% end %>
-        
-        <div class="card">
-            <div class="body">
-                <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-                    <div class="msg">Autenticar-se para iniciar uma nova sessão</div><br/>
-                    <div class="input-group">
-                        <span class="input-group-addon">
-                            <i class="material-icons">email</i>
-                        </span>
-                        <div class="form-line">
-                            <input type="text" class="form-control" name="username" placeholder="Email" required="" autofocus="" aria-required="true">
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-addon">
-                            <i class="material-icons">lock</i>
-                        </span>
-                        <div class="form-line">
-                            <input type="password" class="form-control" name="password" placeholder="Senha" required="" aria-required="true">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-8 p-t-5">
-                            <input type="checkbox" name="rememberme" id="rememberme" class="filled-in chk-col-green">
-                            <label for="rememberme">Lembrar-me</label>
-                        </div>
-                        <div class="col-xs-4">
-                            
-                            <%= f.submit "Acessar", class: "btn btn-block bg-green waves-effect" %>
-                        </div>
-                    </div>
-                    
-                <% end %>
-            </div>
-        </div>
-    </div>-->
-    
-<h2>Log in</h2>
+<!--<h2>Log in</h2>
 
 <% if resource.errors.any? %>
     <div class="error">
@@ -85,3 +35,161 @@
 <% end %>
 
 <%= render "users/shared/links" %>
+-->
+
+ <div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                                Acesso ao <b>Reclame Fácil</b>
+                            </h2>
+                            <ul class="header-dropdown m-r--5">
+                                <li class="dropdown">
+                                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+                                        <i class="material-icons">settings</i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <%= render "users/shared/navlinks" %>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body">
+                           <% if resource.errors.any? %>
+                                <div class="error">
+                                    <strong><%= pluralize(resource.errors.count, "Error") %></strong>
+                                    <ul>
+                                        <% resource.errors.each do |attr,msg| %>
+                                            <li><%= msg %></li>
+                                        <% end %>
+                                    </ul>
+                                </div>
+                            <% end %>
+        
+                            <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="material-icons">person</i>
+                                        </span>
+                                        <div class="form-line">
+                                            <%= f.email_field :email, autofocus: true, placeholder: "Email do Usuário", autocomplete: "email", class: "form-control" %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="material-icons">lock</i>
+                                        </span>
+                                        <div class="form-line">
+                                            <%= f.password_field :password, placeholder: "Senha do Usuário",autocomplete: "current-password", class: "form-control" %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <% if devise_mapping.rememberable? %>
+                                <div class="form-group form-line">
+                                  <%= f.check_box :remember_me, class: "form-control" %>
+                                  <%= f.label :remember_me, "Lembrar minhas credenciais" %>
+                                </div>
+                              <% end %>
+
+                            <div class="row clearfix">
+                                <div class="col-md-12"><%= f.submit "Autenticar-se".html_safe, class: "btn btn-success btn-block" %></div>
+                                
+                            </div>
+
+                            <!--<div class="row clearfix">
+                            <div class="col-md-12">
+                              <div class="form-group form-line">
+                                <%= f.label :email %><br />
+                                <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %>
+                              </div>
+
+                              <div class="form-group form-line">
+                                <%= f.label :password %><br />
+                                <%= f.password_field :password, autocomplete: "current-password", class: "form-control" %>
+                              </div>
+
+                              <% if devise_mapping.rememberable? %>
+                                <div class="form-group form-line">
+                                  <%= f.check_box :remember_me, class: "form-control" %>
+                                  <%= f.label :remember_me %>
+                                </div>
+                              <% end %>
+
+                              <div class="actions">
+                                <%= f.submit "Autenticar-se".html_safe, class: "btn btn-success btn-block" %>
+                              </div>
+                            </div>
+                            </div>-->
+                            <% end %>
+                        </div>
+                    </div>
+    </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    <!--<div class="card">
+                        <div class="header">
+                            <h2>
+                                Basic Card Title <small>Description text here...</small>
+                            </h2>
+                            <ul class="header-dropdown m-r--5">
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <i class="material-icons">mic</i>
+                                    </a>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <i class="material-icons">more_vert</i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a href="javascript:void(0);">Action</a></li>
+                                        <li><a href="javascript:void(0);">Another action</a></li>
+                                        <li><a href="javascript:void(0);">Something else here</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body">
+                            Quis pharetra a pharetra fames blandit. Risus faucibus velit Risus imperdiet mattis neque volutpat, etiam lacinia netus dictum magnis per facilisi sociosqu. Volutpat. Ridiculus nostra.
+                        </div>
+                    </div>-->
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    <!--<div class="card">
+                        <div class="header">
+                            <h2>
+                                Basic Card Title <small>Description text here...</small>
+                            </h2>
+                            <ul class="header-dropdown m-r--5">
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <i class="material-icons">mic</i>
+                                    </a>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <i class="material-icons">more_vert</i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a href="javascript:void(0);">Action</a></li>
+                                        <li><a href="javascript:void(0);">Another action</a></li>
+                                        <li><a href="javascript:void(0);">Something else here</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body">
+                            Quis pharetra a pharetra fames blandit. Risus faucibus velit Risus imperdiet mattis neque volutpat, etiam lacinia netus dictum magnis per facilisi sociosqu. Volutpat. Ridiculus nostra.
+                        </div>
+                    </div>-->
+                </div>
+</div>

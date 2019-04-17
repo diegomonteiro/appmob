@@ -1,6 +1,60 @@
-<p id="notice"><%= notice %></p>
-
-<h1>Events</h1>
+<div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                                Eventos Registrados
+                                <small>Para adicionar acesse o <code>mapa de eventos</code>, dê duplo clique no local, selecione o tipo e descreva o problema.</small>
+                            </h2>
+                            <ul class="header-dropdown m-r--5">
+                                <li class="dropdown">
+                                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <i class="material-icons">more_vert</i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a href="javascript:void(0);" class=" waves-effect waves-block">Action</a></li>
+                                        <li><a href="javascript:void(0);" class=" waves-effect waves-block">Another action</a></li>
+                                        <li><a href="javascript:void(0);" class=" waves-effect waves-block">Something else here</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body table-responsive">
+                            <table class="table table-condensed">
+                               <thead>
+                                <tr>
+                                  <th>Tipo</th>
+                                  <th>Cidade</th>
+                                  <th>Data Criação</th>
+                                  <th>Coordenadas</th>
+                                  <th>Publicado por</th>
+                                  <th><i class="material-icons">thumbs-up</i>&nbsp;</th>                                  
+                                  <th><i class="material-icons">thumbs-down</i>&nbsp;</th>                                  
+                                  <th>Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <% @events.each do |event| %>
+                                  <% votes = event.votes.group(:liked).count %>
+                                  <tr>
+                                    <td><%= Event.types.key(event.event_type).humanize %></td>
+                                    <td><%= event.city.name unless event.city.nil? %></td>
+                                    <td><%= event.created_at %></td>
+                                    <!--<td><a href="/#13/<%= event.lat %>/<%= event.lon %>"><%= event.lat %>, <%= event.lon %></a></td>-->
+                                    <td><%= link_to "<span class='home-link'>#{event.lat}, #{event.lon}</span>".html_safe, root_path %></td>
+                                    <td><%= if event.user.nil? || event.anonymous then "-" else event.user.username end %></td>                                    
+                                    <td><%= votes["true"].to_i %></td>
+                                    <td><%= votes["false"].to_i %></td>
+                                    <td><%= Event.statuses.key(event.event_status).humanize %></td>
+                                  </tr>
+                                  <% end %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!--<h1>Events</h1>
 
 <table>
   <thead>
@@ -38,4 +92,4 @@
 
 <br>
 
-<%= link_to 'New Event', new_event_path %>
+<%= link_to 'New Event', new_event_path %>-->
