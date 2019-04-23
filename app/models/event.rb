@@ -1,4 +1,5 @@
 class Event < ApplicationRecord
+  include Rails.application.routes.url_helpers
 
   belongs_to :city
   belongs_to :user
@@ -14,14 +15,14 @@ class Event < ApplicationRecord
 
   scope :by_user, ->(user_id) { where("user_id = ?", user_id ) }
 
+
   def self.calc_reputation_users
     users = User.where(nil)
 
     users.each do |user|
 
     	events = Event.by_user(user.id)
-    	user = User.find(user.id)
-    	
+    	    	
       unless events.ids.blank?
         votes = Vote.where("event_id IN (?)", events.ids).group(:liked).count
       else
